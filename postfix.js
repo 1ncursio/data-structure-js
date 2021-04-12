@@ -1,14 +1,6 @@
-const readline = require('readline');
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-// 1) 피연산자가 들어오면 바로 출력합니다.
-// 2) 연산자가 들어오면 자기보다 우선순위가 높거나 같은 것들을 빼고 자신을 스택에 담습니다.
-// 3) 여는 괄호 '('를 만나면 무조건 스택에 담습니다.
-// 4) 닫는 괄호 ')'를 만나면 '('를 만날 때까지 스택에서 출력합니다.
+const form = document.querySelector('form');
+const input = document.querySelector('input');
+const button = document.querySelector('button');
 
 const priority = {
   '*': 3,
@@ -20,12 +12,15 @@ const priority = {
 
 const postfix = [];
 const operator = [];
+let exp = '';
+let tokens = [];
 
-console.log('연산식을 입력하세요.(각 토큰은 공백으로 구분됩니다.)');
-rl.on('line', (line) => {
-  const tokens = line.split(' ');
-  // const tokens = '1 / 5 * ( ( 4 + 2 ) / ( 9 - 8 ) )'.split(' ');
-  const numbers = [];
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  console.log(input.value);
+  exp = input.value;
+  tokens = exp.split(/[*/+\-()]/).filter((v) => v !== '');
+
   tokens.forEach((v) => {
     switch (v) {
       case '(':
@@ -58,16 +53,19 @@ rl.on('line', (line) => {
         break;
     }
   });
+
   while (operator.length !== 0) {
     postfix.push(operator.pop());
   }
   console.log(postfix.join(' '));
 
   console.log(calc());
-  rl.close();
-}).on('close', () => {
-  process.exit();
 });
+
+// 1) 피연산자가 들어오면 바로 출력합니다.
+// 2) 연산자가 들어오면 자기보다 우선순위가 높거나 같은 것들을 빼고 자신을 스택에 담습니다.
+// 3) 여는 괄호 '('를 만나면 무조건 스택에 담습니다.
+// 4) 닫는 괄호 ')'를 만나면 '('를 만날 때까지 스택에서 출력합니다.
 
 function calc() {
   let _postfix = postfix;
